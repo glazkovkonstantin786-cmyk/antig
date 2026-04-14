@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Для превращения в нативное приложение (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'%3E%3C/path%3E%3C/svg%3E">
+    <title>Antigravity</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Marked.js (Для форматирования маркдауна) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-[#050505] text-white font-sans overflow-hidden">
+    
+    <!-- Auth Overlay (Пин-код) -->
+    <div id="auth-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="glass-panel p-8 rounded-2xl border border-gray-800 shadow-[0_0_40px_rgba(37,99,235,0.2)] w-80 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
+            <h2 class="text-2xl font-bold mb-2 tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">ANTIGRAVITY</h2>
+            <p class="text-xs text-gray-400 mb-6 uppercase tracking-wider">Agent Access Terminal</p>
+            
+            <input type="password" id="pin-input" class="w-full bg-gray-900/80 border border-gray-700 rounded-lg p-4 text-center text-2xl tracking-[0.5em] mb-4 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" maxlength="4" placeholder="••••" autocomplete="off">
+            <div id="auth-error" class="text-red-400 text-sm hidden mb-4">Access Denied</div>
+            
+            <button id="auth-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg transition-all focus:ring focus:ring-blue-500/50 shadow-[0_0_15px_rgba(37,99,235,0.4)]">Initialize</button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="flex h-[100dvh] w-full relative">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-72 bg-[#0a0a0c] border-r border-gray-800/50 flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 absolute md:relative z-40 h-full">
+            <div class="p-5 border-b border-gray-800/50 flex justify-between items-center bg-[#050505]">
+                <h1 class="font-bold text-lg tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 flex items-center gap-2">
+                    <i data-lucide="hexagon" class="text-blue-500"></i>
+                    AG V3.1
+                </h1>
+                <button id="close-sidebar-btn" class="md:hidden text-gray-500 hover:text-white p-2">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <button id="new-chat-btn" class="mx-4 mt-6 mb-4 flex items-center justify-center gap-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-600/30 rounded-xl p-3 transition-colors">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                New Branch
+            </button>
+
+            <div class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">Sessions</div>
+            <div class="flex-1 overflow-y-auto px-2 pb-4 custom-scrollbar" id="chat-list">
+                <!-- Ветки чатов добавляются сюда скриптом -->
+            </div>
+            
+            <!-- Settings button at the bottom -->
+            <div class="p-4 border-t border-gray-800/50">
+               <button id="settings-btn" class="w-full text-left flex items-center gap-3 text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
+                   <i data-lucide="settings" class="w-5 h-5"></i>
+                   Config Key
+               </button>
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <main class="flex-1 flex flex-col h-full bg-[#050505] relative">
+            <header class="h-16 border-b border-gray-800/50 flex items-center px-4 bg-[#0a0a0c]/80 backdrop-blur z-10 shrink-0 justify-between">
+                <div class="flex items-center gap-3">
+                    <button id="menu-btn" class="md:hidden text-gray-400 hover:text-white p-2 -ml-2 rounded-lg hover:bg-gray-800">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <h2 id="current-chat-title" class="font-medium text-gray-200">Session</h2>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-medium tracking-wide text-gray-400 bg-gray-900 px-3 py-1.5 rounded-full border border-gray-800">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+                    Gemini 3.1 Pro
+                </div>
+            </header>
+
+            <div id="messages-container" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 custom-scrollbar pb-32">
+                <!-- Блоки сообщений -->
+            </div>
+
+            <!-- Input area -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#050505] via-[#050505] to-transparent">
+                <div class="max-w-4xl mx-auto relative glass-panel rounded-2xl border border-gray-700/50 shadow-2xl focus-within:border-blue-500/50 transition-all bg-[#0f0f13]/90">
+                    <textarea id="chat-input" class="w-full bg-transparent px-4 pt-4 pb-12 text-gray-100 placeholder-gray-500 resize-none focus:outline-none max-h-48 min-h-[60px] custom-scrollbar" placeholder="Send a command parameter..."></textarea>
+                    <div class="absolute bottom-3 right-3 flex items-center gap-2">
+                        <button id="send-btn" class="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white p-2.5 rounded-xl transition-all shadow-[0_0_10px_rgba(37,99,235,0.3)] flex items-center justify-center">
+                            <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden md:hidden"></div>
+    </div>
+    
+    <!-- Modal for Settings (API Key) -->
+    <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div class="bg-[#0f0f13] p-6 rounded-2xl border border-gray-800 shadow-2xl w-[90%] max-w-md">
+            <h3 class="text-xl font-bold mb-4">Configuration</h3>
+            <p class="text-sm text-gray-400 mb-2">OpenRouter API Key:</p>
+            <input type="password" id="api-key-input" class="w-full bg-black/50 border border-gray-700 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:border-blue-500 text-green-400 font-mono" placeholder="sk-or-v1-...">
+            <div class="flex justify-end gap-3">
+                <button id="cancel-settings" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
+                <button id="save-settings" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-medium transition-colors">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Запуск инициализации иконок до скрипта, чтобы они сразу отрендерились -->
+    <script>
+        lucide.createIcons();
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW setup failed', err));
+            });
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>

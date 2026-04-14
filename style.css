@@ -1,0 +1,117 @@
+/* Antigravity Premium CSS */
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+  background: rgba(15, 15, 19, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Scrollbar Customization */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Chat Bubbles */
+.msg-bubble {
+  max-w: 88%;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.msg-user {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+}
+
+.msg-agent {
+  background: rgba(20, 20, 25, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Branch styling in sidebar */
+.branch-item {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.branch-item:hover, .branch-item.active {
+  background: rgba(37, 99, 235, 0.1);
+  border-left-color: #3b82f6; 
+}
+.branch-item.active {
+  background: rgba(37, 99, 235, 0.15);
+}
+
+/* Markdown specific styling */
+.msg-agent p { margin-bottom: 0.8rem; }
+.msg-agent p:last-child { margin-bottom: 0; }
+.msg-agent pre {
+  background: #000;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  border: 1px solid #222;
+}
+.msg-agent code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  color: #a78bfa;
+}
+.msg-agent pre code {
+  background: transparent;
+  padding: 0;
+  color: #e2e8f0;
+}
+.msg-agent ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+.msg-agent ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1rem; }
+.msg-agent h1, .msg-agent h2, .msg-agent h3 { 
+  font-weight: 600; 
+  margin-top: 1.2rem; 
+  margin-bottom: 0.6rem; 
+  color: #fff; 
+}
+
+/* Typing Indicator Animation */
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #3b82f6;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes typing {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
