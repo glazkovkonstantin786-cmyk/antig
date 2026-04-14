@@ -17,38 +17,18 @@ jobs:
         with:
           node-version: 18
 
-      - name: Debug - List Files
-        run: ls -la
-
-      - name: Install Dependencies
-        run: |
-          npm install @capacitor/core@5.7.0 @capacitor/cli@5.7.0 @capacitor/android@5.7.0
-          # We don't need a full npm install if we just want these three
-
-      - name: Prepare Web Assets
-        run: |
-          mkdir -p www
-          # Копируем только те файлы, которые реально существуют
-          cp index.html www/
-          cp app.js www/ || echo "no app.js"
-          cp style.css www/ || echo "no style.css"
-          cp sw.js www/ || echo "no sw.js"
-          cp manifest.json www/ || echo "no manifest.json"
-          echo "Assets prepared in www/"
-          ls -la www/
-
-      - name: Capacitor Setup
-        run: |
-          # Принудительно инициализируем, если вдруг конфиг не подхватывается
-          npx cap add android
-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Build APK
+      - name: Run Build Script
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Build Final APK
         run: |
           cd android
           chmod +x gradlew
