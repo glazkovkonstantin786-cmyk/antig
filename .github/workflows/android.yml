@@ -19,15 +19,16 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          # Создаем пустую папку www для веб-активов (Capacitor требует ее)
+          npm install
+
+      - name: Prepare Web Assets
+        run: |
           mkdir -p www
-          cp index.html app.js style.css sw.js manifest.json www/
-          # Если есть иконки или другие ресурсы - тоже копируем сюда
+          cp -v index.html app.js style.css sw.js manifest.json package.json www/
 
       - name: Capacitor Sync
         run: |
-          npx cap init Antigravity com.antigravity.mobile --web-dir www
+          # Используем npx cap sync, так как проект уже инициализирован конфигом
           npx cap add android
           npx cap sync android
 

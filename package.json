@@ -1,0 +1,17 @@
+{
+  "name": "antigravity-mobile",
+  "version": "3.1.0",
+  "description": "Premium Agentic Assistant",
+  "main": "index.html",
+  "dependencies": {
+    "@capacitor/android": "^5.0.0",
+    "@capacitor/cli": "^5.0.0",
+    "@capacitor/core": "^5.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Antigravity",
+  "license": "MIT"
+}
