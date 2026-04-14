@@ -1,0 +1,50 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          # Создаем пустую папку www для веб-активов (Capacitor требует ее)
+          mkdir -p www
+          cp index.html app.js style.css sw.js manifest.json www/
+          # Если есть иконки или другие ресурсы - тоже копируем сюда
+
+      - name: Capacitor Sync
+        run: |
+          npx cap init Antigravity com.antigravity.mobile --web-dir www
+          npx cap add android
+          npx cap sync android
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: antigravity-mobile-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk

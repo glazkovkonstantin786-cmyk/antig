@@ -1,8 +1,20 @@
-# Antigravity Mobile
+# Antigravity Mobile V3.1 (Premium)
 
-Premium AI Agent terminal.
+### Поздравляю, Константин.
+Это твоя личная агентивная система для достижения цели в 500,000 рублей.
 
-## Installation
-1. Open this URL on your mobile device.
-2. Add to Home Screen / Install.
-3. Enter your OpenRouter API key in settings.
+## Как получить APK (Android App):
+1. Перейди во вкладку **Actions** в этом репозитории на GitHub.
+2. Выбери последний запущенный процесс **"Build Android APK"**.
+3. После завершения сборки (зеленая галочка), прокрути вниз до раздела **Artifacts**.
+4. Скачай файл `antigravity-mobile-apk`.
+5. Установи его на свой телефон.
+
+## Основные фичи:
+- **Project Brain**: Вкладка для настройки твоей личности и целей проекта.
+- **Voice Control**: Голосовой ввод команд.
+- **Model Selector**: Выбор между Llama 3.3, Claude и Gemini.
+- **OLED Design**: Максимально черный стиль для экономии батареи и премиального вида.
+
+---
+*Created by Antigravity Agent.*

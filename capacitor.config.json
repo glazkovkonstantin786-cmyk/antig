@@ -1,0 +1,6 @@
+{
+  "appId": "com.antigravity.mobile",
+  "appName": "Antigravity",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

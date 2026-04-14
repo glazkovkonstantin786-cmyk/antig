@@ -3,128 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Для превращения в нативное приложение (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z'%3E%3C/path%3E%3C/svg%3E">
-    <title>Antigravity</title>
+    <link rel="icon" href="favicon.svg">
+    <title>Antigravity | Terminal</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Marked.js (Для форматирования маркдауна) -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-</head>
-<body class="bg-[#050505] text-white font-sans overflow-hidden">
     
-    <!-- Auth Overlay (Пин-код) -->
-    <div id="auth-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
-        <div class="glass-panel p-8 rounded-2xl border border-gray-800 shadow-[0_0_40px_rgba(37,99,235,0.2)] w-80 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-purple-600"></div>
-            <h2 class="text-2xl font-bold mb-2 tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">ANTIGRAVITY</h2>
-            <p class="text-xs text-gray-400 mb-6 uppercase tracking-wider">Agent Access Terminal</p>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-black text-white font-sans overflow-hidden select-none">
+    
+    <!-- SYSTEM SCANLINES EFFECT -->
+    <div class="scanlines"></div>
+
+    <!-- AUTH TERMINAL OVERLAY -->
+    <div id="auth-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+        <div class="w-full max-w-xs text-center p-6 space-y-8 animate-glitch-entry">
+            <div class="mb-4">
+                <div class="inline-block p-4 border border-cyan-500/30 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                    <i data-lucide="shield-check" class="w-12 h-12 text-cyan-400"></i>
+                </div>
+            </div>
+            <div>
+                <h2 class="text-3xl font-bold tracking-[0.2em] mb-1 outfit">ANTIGRAVITY</h2>
+                <p class="text-[10px] text-cyan-500/60 uppercase tracking-[0.4em] jetbrains">Neural Link Authorization</p>
+            </div>
             
-            <input type="password" id="pin-input" class="w-full bg-gray-900/80 border border-gray-700 rounded-lg p-4 text-center text-2xl tracking-[0.5em] mb-4 focus:outline-none focus:border-blue-500 transition-colors shadow-inner" maxlength="4" placeholder="••••" autocomplete="off">
-            <div id="auth-error" class="text-red-400 text-sm hidden mb-4">Access Denied</div>
+            <div class="relative group">
+                <input type="password" id="pin-input" class="w-full bg-black border-b border-cyan-900 focus:border-cyan-400 text-center text-3xl tracking-[0.6em] py-2 outline-none transition-all jetbrains" maxlength="4" placeholder="••••">
+                <div id="auth-error" class="absolute -bottom-6 left-0 right-0 text-red-500 text-[10px] uppercase tracking-widest hidden">Access Denied</div>
+            </div>
             
-            <button id="auth-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg transition-all focus:ring focus:ring-blue-500/50 shadow-[0_0_15px_rgba(37,99,235,0.4)]">Initialize</button>
+            <button id="auth-btn" class="w-full py-4 border border-cyan-500/50 hover:bg-cyan-500/10 text-cyan-400 text-xs font-bold uppercase tracking-widest transition-all rounded-sm overflow-hidden relative">
+                <span class="relative z-10">Initialize System</span>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent -translate-x-full animate-shimmer"></div>
+            </button>
         </div>
     </div>
 
-    <!-- Main Layout -->
+    <!-- MAIN APP INTERFACE -->
     <div class="flex h-[100dvh] w-full relative">
         
-        <!-- Sidebar -->
-        <aside id="sidebar" class="w-72 bg-[#0a0a0c] border-r border-gray-800/50 flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 absolute md:relative z-40 h-full">
-            <div class="p-5 border-b border-gray-800/50 flex justify-between items-center bg-[#050505]">
-                <h1 class="font-bold text-lg tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 flex items-center gap-2">
-                    <i data-lucide="hexagon" class="text-blue-500"></i>
-                    AG V3.1
-                </h1>
-                <button id="close-sidebar-btn" class="md:hidden text-gray-500 hover:text-white p-2">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-80 bg-[#050505] border-r border-white/5 flex flex-col z-50 transition-transform duration-500 transform -translate-x-full md:translate-x-0 glass-sidebar">
+            <div class="p-6 h-20 flex items-center justify-between border-b border-white/5">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_#06b6d4]"></div>
+                    <span class="outfit font-bold tracking-widest text-sm uppercase">AG Terminal 3.1</span>
+                </div>
+                <button id="close-sidebar-btn" class="md:hidden text-gray-500 hover:text-white transition-colors">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
                 </button>
             </div>
             
-            <button id="new-chat-btn" class="mx-4 mt-6 mb-4 flex items-center justify-center gap-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-600/30 rounded-xl p-3 transition-colors">
-                <i data-lucide="plus" class="w-5 h-5"></i>
-                New Branch
-            </button>
-
-            <div class="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 mt-4">Sessions</div>
-            <div class="flex-1 overflow-y-auto px-2 pb-4 custom-scrollbar" id="chat-list">
-                <!-- Ветки чатов добавляются сюда скриптом -->
+            <div class="flex-1 overflow-y-auto px-4 py-6 space-y-2 custom-scrollbar" id="chat-list">
+                <!-- Session list items -->
             </div>
-            
-            <!-- Settings button at the bottom -->
-            <div class="p-4 border-t border-gray-800/50">
-               <button id="settings-btn" class="w-full text-left flex items-center gap-3 text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800/50 transition-colors">
-                   <i data-lucide="settings" class="w-5 h-5"></i>
-                   Config Key
-               </button>
+
+            <div class="p-4 space-y-2 border-t border-white/5">
+                <button id="brain-btn" class="w-full flex items-center gap-3 p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/20 text-cyan-400 text-sm hover:bg-cyan-500/10 transition-all">
+                    <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                    <span class="font-medium">Project Brain</span>
+                </button>
+                <button id="settings-btn" class="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 text-gray-400 hover:text-white transition-all text-sm">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                    <span>System Config</span>
+                </button>
             </div>
         </aside>
 
-        <!-- Chat Area -->
-        <main class="flex-1 flex flex-col h-full bg-[#050505] relative">
-            <header class="h-16 border-b border-gray-800/50 flex items-center px-4 bg-[#0a0a0c]/80 backdrop-blur z-10 shrink-0 justify-between">
-                <div class="flex items-center gap-3">
-                    <button id="menu-btn" class="md:hidden text-gray-400 hover:text-white p-2 -ml-2 rounded-lg hover:bg-gray-800">
+        <!-- CHAT CONTENT -->
+        <main class="flex-1 flex flex-col h-full bg-black relative">
+            <header class="h-20 border-b border-white/5 flex items-center px-6 justify-between shrink-0">
+                <div class="flex items-center gap-4">
+                    <button id="menu-btn" class="md:hidden p-2 -ml-2 text-gray-400 hover:text-white transition-colors">
                         <i data-lucide="menu" class="w-6 h-6"></i>
                     </button>
-                    <h2 id="current-chat-title" class="font-medium text-gray-200">Session</h2>
+                    <div>
+                        <p class="text-[10px] text-cyan-500/50 uppercase jetbrains tracking-widest mb-1">Session Node</p>
+                        <h2 id="current-chat-title" class="font-semibold text-sm outfit tracking-wide text-gray-100">Initializing...</h2>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs font-medium tracking-wide text-gray-400 bg-gray-900 px-3 py-1.5 rounded-full border border-gray-800">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
-                    Gemini 3.1 Pro
+                
+                <div class="flex items-center gap-3">
+                    <select id="model-select" class="bg-black border border-white/10 rounded-lg px-3 py-1.5 text-[10px] text-gray-400 outline-none focus:border-cyan-500/50 transition-all jetbrains appearance-none cursor-pointer hover:bg-white/5 pr-8 relative">
+                        <option value="openrouter/auto">Auto Select</option>
+                        <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+                        <option value="google/gemini-2.0-flash-exp">Gemini 2.0</option>
+                        <option value="anthropic/claude-3.5-sonnet">Claude 3.5</option>
+                    </select>
                 </div>
             </header>
 
-            <div id="messages-container" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col gap-6 custom-scrollbar pb-32">
-                <!-- Блоки сообщений -->
+            <div id="messages-container" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 pb-40 custom-scrollbar">
+                <!-- Messages will appear here -->
             </div>
 
-            <!-- Input area -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#050505] via-[#050505] to-transparent">
-                <div class="max-w-4xl mx-auto relative glass-panel rounded-2xl border border-gray-700/50 shadow-2xl focus-within:border-blue-500/50 transition-all bg-[#0f0f13]/90">
-                    <textarea id="chat-input" class="w-full bg-transparent px-4 pt-4 pb-12 text-gray-100 placeholder-gray-500 resize-none focus:outline-none max-h-48 min-h-[60px] custom-scrollbar" placeholder="Send a command parameter..."></textarea>
-                    <div class="absolute bottom-3 right-3 flex items-center gap-2">
-                        <button id="send-btn" class="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white p-2.5 rounded-xl transition-all shadow-[0_0_10px_rgba(37,99,235,0.3)] flex items-center justify-center">
-                            <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
-                        </button>
+            <!-- INPUT AREA -->
+            <div class="absolute bottom-0 inset-x-0 p-4 md:p-8 bg-gradient-to-t from-black via-black to-transparent pointer-events-none">
+                <div class="max-w-4xl mx-auto pointer-events-auto">
+                    <div class="relative glass-panel rounded-2xl border border-white/10 p-2 focus-within:border-cyan-500/40 transition-all shadow-2xl">
+                        <textarea id="chat-input" class="w-full bg-transparent px-4 py-3 pb-8 text-gray-200 placeholder-gray-600 outline-none resize-none max-h-48 min-h-[56px] custom-scrollbar text-sm" placeholder="Transmit command..."></textarea>
+                        
+                        <div class="absolute bottom-3 inset-x-4 flex justify-between items-center">
+                            <div class="flex items-center gap-1">
+                                <button id="voice-btn" class="p-2 text-gray-500 hover:text-cyan-400 transition-colors rounded-lg hover:bg-cyan-500/5">
+                                    <i data-lucide="mic" class="w-4 h-4"></i>
+                                </button>
+                                <div id="recording-active" class="hidden flex items-center gap-2 px-2 text-[10px] text-red-500 font-bold uppercase jetbrains tracking-tighter">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    REC
+                                </div>
+                            </div>
+                            <button id="send-btn" class="w-10 h-10 flex items-center justify-center bg-cyan-600 hover:bg-cyan-500 disabled:opacity-20 disabled:hover:bg-cyan-600 transition-all rounded-xl shadow-[0_0_15px_rgba(8,145,178,0.4)]">
+                                <i data-lucide="arrow-up" class="w-5 h-5"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
-        
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[45] hidden md:hidden transition-all duration-300"></div>
     </div>
-    
-    <!-- Modal for Settings (API Key) -->
-    <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
-        <div class="bg-[#0f0f13] p-6 rounded-2xl border border-gray-800 shadow-2xl w-[90%] max-w-md">
-            <h3 class="text-xl font-bold mb-4">Configuration</h3>
-            <p class="text-sm text-gray-400 mb-2">OpenRouter API Key:</p>
-            <input type="password" id="api-key-input" class="w-full bg-black/50 border border-gray-700 rounded-lg p-3 text-sm mb-6 focus:outline-none focus:border-blue-500 text-green-400 font-mono" placeholder="sk-or-v1-...">
-            <div class="flex justify-end gap-3">
-                <button id="cancel-settings" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">Cancel</button>
-                <button id="save-settings" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-medium transition-colors">Save</button>
+
+    <!-- BRAIN MODAL (Identity Module) -->
+    <div id="brain-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 transition-all duration-300 hidden px-4">
+        <div class="w-full max-w-lg bg-[#0a0a0c] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center bg-[#0d0d10]">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="brain" class="text-cyan-400 w-5 h-5"></i>
+                    <h3 class="text-lg font-bold outfit uppercase tracking-wider">Neural Identity Brain</h3>
+                </div>
+                <button id="close-brain-btn" class="text-gray-500 hover:text-white p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div class="space-y-2">
+                    <label class="text-[10px] text-cyan-400 font-bold uppercase jetbrains tracking-[0.2em]">Sektor 01: Persona (Who are you?)</label>
+                    <textarea id="brain-persona" class="w-full bg-black/50 border border-white/5 rounded-xl p-4 text-sm text-gray-300 outline-none focus:border-cyan-500/40 min-h-[80px]" placeholder="Name, skills, background..."></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] text-cyan-400 font-bold uppercase jetbrains tracking-[0.2em]">Sektor 02: Core Project</label>
+                    <textarea id="brain-project" class="w-full bg-black/50 border border-white/5 rounded-xl p-4 text-sm text-gray-300 outline-none focus:border-cyan-500/40 min-h-[80px]" placeholder="Describe your channels, content niche..."></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] text-cyan-400 font-bold uppercase jetbrains tracking-[0.2em]">Sektor 03: Primary Goal (KPI)</label>
+                    <textarea id="brain-goal" class="w-full bg-black/50 border border-white/5 rounded-xl p-4 text-sm text-gray-300 outline-none focus:border-cyan-500/40 min-h-[60px]" placeholder="500,000 RUB goal details..."></textarea>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[10px] text-cyan-400 font-bold uppercase jetbrains tracking-[0.2em]">Sektor 04: AI Directives</label>
+                    <textarea id="brain-directives" class="w-full bg-black/50 border border-white/5 rounded-xl p-4 text-sm text-gray-300 outline-none focus:border-cyan-500/40 min-h-[80px]" placeholder="How should Antigravity correspond? (e.g. 'be ruthless', 'use code')..."></textarea>
+                </div>
+            </div>
+            
+            <div class="p-6 bg-[#0d0d10] border-t border-white/5 flex gap-4">
+                <button id="save-brain-btn" class="flex-1 py-4 bg-cyan-600 hover:bg-cyan-500 text-white font-bold uppercase text-[10px] tracking-[0.3em] transition-all rounded-xl">Initialize Matrix Sync</button>
             </div>
         </div>
     </div>
 
-    <!-- Запуск инициализации иконок до скрипта, чтобы они сразу отрендерились -->
+    <!-- SYSTEM CONFIG MODAL -->
+    <div id="settings-modal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 hidden px-4">
+        <div class="w-full max-w-sm bg-[#0f0f13] p-6 rounded-2xl border border-white/10 shadow-3xl">
+            <h3 class="text-xl font-bold mb-6 outfit">System Config</h3>
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="text-[10px] text-gray-500 uppercase jetbrains">OpenRouter API Access</label>
+                    <input type="password" id="api-key-input" class="w-full bg-black border border-white/10 rounded-xl p-4 text-cyan-400 jetbrains outline-none focus:border-cyan-500/50" placeholder="sk-or-v1-...">
+                </div>
+                <div class="flex items-center gap-2 p-3 bg-red-900/10 border border-red-900/20 rounded-xl">
+                    <i data-lucide="info" class="w-4 h-4 text-red-500"></i>
+                    <p class="text-[10px] text-red-400 font-medium leading-relaxed uppercase jetbrains tracking-tighter">Key is stored locally in device vault only.</p>
+                </div>
+            </div>
+            <div class="mt-8 flex gap-3">
+                <button id="cancel-settings" class="flex-1 py-3 text-gray-500 hover:text-white transition-colors text-sm font-medium">Cancel</button>
+                <button id="save-settings" class="flex-2 px-8 py-3 bg-white text-black font-bold uppercase text-[10px] tracking-widest rounded-xl hover:bg-cyan-500 hover:text-white transition-all">Synchronize</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW setup failed', err));
+                navigator.serviceWorker.register('./sw.js').catch(err => console.error('SW Error', err));
             });
         }
     </script>
