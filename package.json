@@ -1,16 +1,17 @@
 {
   "name": "antigravity-mobile",
-  "version": "3.1.0",
-  "description": "Premium Agentic Assistant",
+  "version": "4.0.0",
+  "description": "Antigravity — Personal AI Terminal APK",
   "main": "index.html",
   "dependencies": {
-    "@capacitor/android": "^5.0.0",
-    "@capacitor/cli": "^5.0.0",
-    "@capacitor/core": "^5.0.0"
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "python -m http.server 3000 --directory www",
+    "build": "bash build.sh"
   },
   "author": "Antigravity",
   "license": "MIT"
